@@ -50,6 +50,7 @@ private:
     int generations;
     bool* universe; // map
     bool* next; // map
+    int* generation;
     int universeSize;
     bool isAlive(int k, int j); // return true if universe[k][j] accept rules
     void resetUniverse();// reset the size of universe

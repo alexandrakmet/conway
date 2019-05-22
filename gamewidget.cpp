@@ -17,9 +17,12 @@ GameWidget::GameWidget(QWidget *parent) :
     m_masterColor = "#000";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
+    generation = new int[(universeSize + 2) * (universeSize + 2)];
     connect(timer, SIGNAL(timeout()), this, SLOT(newGeneration()));
     memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(generation, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
+
 }
 
 GameWidget::~GameWidget()
@@ -68,8 +71,11 @@ void GameWidget::resetUniverse()
     delete [] next;
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
+    generation = new int[(universeSize + 2) * (universeSize + 2)];
     memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(generation, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
+
 }
 
 QString GameWidget::dump()
@@ -124,8 +130,12 @@ bool GameWidget::isAlive(int k, int j)
     power += universe[(k-1)*universeSize + (j+1)];
     power += universe[(k-1)*universeSize + (j-1)];
     power += universe[(k+1)*universeSize +  (j+1)];
-    if (((universe[k*universeSize + j] == true) && (power == 2)) || (power == 3))
-           return true;
+    if ((universe[k*universeSize + j] == true) && (power == 2)){
+        generation[k*universeSize + j]++;
+        return true;
+    }
+    if(power == 3) return true;
+    generation[k*universeSize + j]=0;
     return false;
 }
 
@@ -224,7 +234,11 @@ void GameWidget::paintUniverse(QPainter &p)
                 qreal left = (qreal)(cellWidth*j-cellWidth); // margin from left
                 qreal top  = (qreal)(cellHeight*k-cellHeight); // margin from top
                 QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
+                if(generation[k*universeSize + j]<2)
                 p.fillRect(r, QBrush(m_masterColor)); // fill cell with brush of main color
+                else {
+                p.fillRect(r, QBrush(m_masterColor.lighter(110*(generation[k*universeSize + j])/2))); // fill cell with brush of main color
+                }
             }
         }
     }
