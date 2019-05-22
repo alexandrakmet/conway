@@ -22,7 +22,8 @@ public slots:
 
     void saveGame();
     void loadGame();
-    
+
+
 private:
     Ui::MainWindow *ui;
     QColor currentColor;

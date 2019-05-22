@@ -3,7 +3,9 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QRectF>
+#include <QString>
 #include <QPainter>
+#include <QDebug>
 #include <qmath.h>
 #include "gamewidget.h"
 
@@ -14,7 +16,7 @@ GameWidget::GameWidget(QWidget *parent) :
     universeSize(50)
 {
     timer->setInterval(300);
-    m_masterColor = "#000";
+    m_masterColor = "#000066";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
     generation = new int[(universeSize + 2) * (universeSize + 2)];
@@ -34,6 +36,7 @@ GameWidget::~GameWidget()
 void GameWidget::startGame(const int &number)
 {
     generations = number;
+
     timer->start();
 }
 
@@ -52,6 +55,18 @@ void GameWidget::clear()
     gameEnds(true);
     update();
 }
+
+void GameWidget::random(){
+    clear();
+    for(int k = 1; k <= universeSize*universeSize/2; k++) {
+         int x = g.bounded(universeSize);
+         int y = g.bounded(universeSize);
+         universe[y*universeSize+x]=true;
+         generation[y*universeSize+x]=g.bounded(9);
+        }
+    update();
+}
+
 
 int GameWidget::cellNumber()
 {
@@ -90,6 +105,7 @@ QString GameWidget::dump()
                 temp = 'o';
             }
             master.append(temp);
+            generation[k*universeSize + j]<10? master.append(QString::number(generation[k*universeSize + j])):master.append(QString::number(9));
         }
         master.append("\n");
     }
@@ -103,9 +119,13 @@ void GameWidget::setDump(const QString &data)
         for(int j = 1; j <= universeSize; j++) {
             universe[k*universeSize + j] = data[current] == '*';
             current++;
+            QString g = data[current];
+            generation[k*universeSize + j]=g.toInt();
+            current++;
         }
         current++;
     }
+
     update();
 }
 

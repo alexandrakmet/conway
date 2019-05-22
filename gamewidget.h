@@ -3,6 +3,8 @@
 
 #include <QColor>
 #include <QWidget>
+#include <QRandomGenerator>
+
 
 class GameWidget : public QWidget
 {
@@ -26,6 +28,7 @@ public slots:
     void startGame(const int &number = -1); // start
     void stopGame(); // finish
     void clear(); // clear
+    void random();
 
     int cellNumber(); // number of the cells in one row
     void setCellNumber(const int &s); // set number of the cells in one row
@@ -45,6 +48,7 @@ private slots:
     void newGeneration();
 
 private:
+    QRandomGenerator g;
     QColor m_masterColor;
     QTimer* timer;
     int generations;

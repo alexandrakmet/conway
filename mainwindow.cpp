@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->startButton, SIGNAL(clicked()), game,SLOT(startGame()));
     connect(ui->stopButton, SIGNAL(clicked()), game,SLOT(stopGame()));
     connect(ui->clearButton, SIGNAL(clicked()), game,SLOT(clear()));
+    connect(ui->randButton, SIGNAL(clicked()), game,SLOT(random()));
     connect(ui->iterInterval, SIGNAL(valueChanged(int)), game, SLOT(setInterval(int)));
     connect(ui->cellsControl, SIGNAL(valueChanged(int)), game, SLOT(setCellNumber(int)));
     connect(game,SIGNAL(environmentChanged(bool)),ui->cellsControl,SLOT(setDisabled(bool)));
@@ -114,3 +115,5 @@ void MainWindow::selectMasterColor()
     icon.fill(color);
     ui->colorButton->setIcon( QIcon(icon) );
 }
+
+
