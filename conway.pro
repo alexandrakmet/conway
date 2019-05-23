@@ -23,3 +23,6 @@ FORMS    += mainwindow.ui
 
 OTHER_FILES += \
     README.markdown
+
+DISTFILES += \
+    stylesheet.qss

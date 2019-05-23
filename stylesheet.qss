@@ -1,0 +1,33 @@
+QWidget {
+ background-color: #f8ecf2;
+ }
+
+QPushButton {
+    border-radius: 10px;
+    border-style: outset;
+    border-color: #72274e;
+    border-width: 2px;
+    background-color: #f2d9e6;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    color: #72274e;
+    font-weight: bold;
+    padding: 3px;
+}
+
+QPushButton:hover {
+    background-color: #3a3a3a;
+}
+
+QPushButton:pressed, QPushButton:default:hover:pressed {
+    background-color: yellow;
+    color: #1d1d1d;
+}
+
+QPushButton:focused {
+    border-color: yellow, yellow;
+    border-width: 1, 1;
+    border-style: solid;
+}
+
+
