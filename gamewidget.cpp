@@ -47,11 +47,9 @@ void GameWidget::stopGame()
 
 void GameWidget::clear()
 {
-    for(int k = 1; k <= universeSize; k++) {
-        for(int j = 1; j <= universeSize; j++) {
-            universe[k*universeSize + j] = false;
-        }
-    }
+    memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(generation, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
     gameEnds(true);
     update();
 }
@@ -232,7 +230,7 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
 void GameWidget::paintGrid(QPainter &p)
 {
     QRect borders(0, 0, width()-1, height()-1); // borders of the universe
-    QColor gridColor = m_masterColor; // color of the grid
+    QColor gridColor = "#800040"; // color of the grid
     gridColor.setAlpha(10); // must be lighter than main color
     p.setPen(gridColor);
     double cellWidth = (double)width()/universeSize; // width of the widget / number of cells at one row
