@@ -21,9 +21,15 @@ GameWidget::GameWidget(QWidget *parent) :
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
     generation = new int[(universeSize + 2) * (universeSize + 2)];
+    rule.survive = new bool[9]; rule.born = new bool[9];
+
     connect(timer, SIGNAL(timeout()), this, SLOT(newGeneration()));
+
     memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
+    memset(rule.survive, false, sizeof(bool)*9);
+    memset(rule.born, false, sizeof(bool)*9);
+    rule.born[3] = true; rule.survive[2] = true; rule.survive[3] = true;
     memset(generation, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
 }
 
@@ -56,6 +62,7 @@ void GameWidget::clear()
 
 void GameWidget::random(){
     clear();
+    emit environmentChanged(true);
     for(int k = 1; k <= universeSize*universeSize/2; k++) {
          int x = g.bounded(universeSize);
          int y = g.bounded(universeSize);
@@ -127,6 +134,14 @@ void GameWidget::setDump(const QString &data)
     update();
 }
 
+void GameWidget::setRule(bool *s, bool *b)
+{
+    clear();
+    rule.survive=s;
+    rule.born=b;
+
+}
+
 int GameWidget::interval()
 {
     return timer->interval();
@@ -148,11 +163,11 @@ bool GameWidget::isAlive(int k, int j)
     power += universe[(k-1)*universeSize + (j+1)];
     power += universe[(k-1)*universeSize + (j-1)];
     power += universe[(k+1)*universeSize +  (j+1)];
-    if ((universe[k*universeSize + j] == true) && (power == 2)){
+    if ((universe[k*universeSize + j] == true) && rule.survive[power]){
         generation[k*universeSize + j]++;
         return true;
     }
-    if(power == 3) return true;
+    if(universe[k*universeSize + j] == false && rule.born[power]) return true;
     generation[k*universeSize + j]=0;
     return false;
 }
@@ -237,19 +252,19 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
             generation[kk*universeSize+jj]=0;}
         else
             generation[kk*universeSize+jj]=gg;
-
         //emit environmentChanged(true);
         double cellWidth = (double)width()/universeSize;
         double cellHeight = (double)height()/universeSize;
         int k = floor(e->y()/cellHeight)+1;
         int j = floor(e->x()/cellWidth)+1;
+        if(j!=universeSize && k!=0){
         kk=k;jj=j;
         a=universe[kk*universeSize+jj];
         g=generation[kk*universeSize+jj];
         universe[kk*universeSize+jj]=true;
         generation[k*universeSize+j]=-1;
-        update();
-}
+        update();} else update();
+    }
 }
 
 void GameWidget::mouseReleaseEvent(QMouseEvent *e)

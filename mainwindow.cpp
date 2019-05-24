@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(game,SIGNAL(gameEnds(bool)),ui->cellsControl,SLOT(setEnabled(bool)));
     connect(ui->colorButton, SIGNAL(clicked()), this, SLOT(selectMasterColor()));
 
+    connect(ui->comboRules, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboboxChanged()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveGame()));
     connect(ui->loadButton, SIGNAL(clicked()), this, SLOT(loadGame()));
 
@@ -55,6 +56,29 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::onComboboxChanged() {
+    if (ui->comboRules->currentIndex() != ui->comboRules->count() - 1) {
+        ui->labelSurv->setText(ruleSetSur[ui->comboRules->currentIndex()]);
+        ui->labelBorn->setText(ruleSetBor[ui->comboRules->currentIndex()]);
+    }
+    bool* sur = new bool[9];
+    bool* bor = new bool[9];
+    for (int i = 0; i < 9; i ++) {
+        sur[i] = bor[i] = false;
+    }
+    QStringList surList = ruleSetSur[ui->comboRules->currentIndex()].split(';');
+    for (int i = 0; i < surList.size(); i++) {
+        sur[surList.at(i).toInt()] = true;
+    }
+    QStringList borList = ruleSetBor[ui->comboRules->currentIndex()].split(';');
+    qDebug()<<ruleSetBor[ui->comboRules->currentIndex()];
+    for (int i = 0; i < borList.size(); i++) {
+        bor[borList.at(i).toInt()] = true;
+    }
+    game->setRule(sur, bor);
+
 }
 
 void MainWindow::saveGame()

@@ -42,6 +42,7 @@ public slots:
 
     QString dump(); // dump of current universe
     void setDump(const QString &data); // set current universe from it's dump
+    void setRule(bool*, bool*);
 
 private slots:
     void paintGrid(QPainter &p);
@@ -57,6 +58,10 @@ private:
     bool* next; // map
     int* generation;
     int universeSize;
+    struct Rule {
+        bool* survive;
+        bool* born;
+    } rule;
 
     bool isAlive(int k, int j); // return true if universe[k][j] accept rules
     void resetUniverse();// reset the size of universe

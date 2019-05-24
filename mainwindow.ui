@@ -110,7 +110,7 @@
           <item>
            <widget class="QLabel" name="labelBorn">
             <property name="text">
-             <string/>
+             <string>3</string>
             </property>
            </widget>
           </item>
@@ -128,7 +128,7 @@
           <item>
            <widget class="QLabel" name="labelSurv">
             <property name="text">
-             <string/>
+             <string>2;3</string>
             </property>
            </widget>
           </item>

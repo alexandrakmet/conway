@@ -20,7 +20,7 @@ public:
 
 public slots:
     void selectMasterColor();
-
+    void onComboboxChanged();
     void saveGame();
     void loadGame();
 
