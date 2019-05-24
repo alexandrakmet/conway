@@ -17,7 +17,7 @@ GameWidget::GameWidget(QWidget *parent) :
 {
     setMouseTracking(true);
     timer->setInterval(300);
-    m_masterColor = "#000066";
+    m_masterColor = "#72274e";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
     generation = new int[(universeSize + 2) * (universeSize + 2)];
@@ -25,7 +25,6 @@ GameWidget::GameWidget(QWidget *parent) :
     memset(universe, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(next, false, sizeof(bool)*(universeSize + 2) * (universeSize + 2));
     memset(generation, 0, sizeof(int)*(universeSize + 2) * (universeSize + 2));
-
 }
 
 GameWidget::~GameWidget()
@@ -200,8 +199,9 @@ void GameWidget::newGeneration()
 void GameWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    paintGrid(p);
     paintUniverse(p);
+    paintGrid(p);
+
 }
 
 bool mp=false;
@@ -217,7 +217,7 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     mp=true;
     update();
 }
-int kk = 0,jj = 0;
+int kk = 0,jj = 0, gg; bool a;
 void GameWidget::mouseMoveEvent(QMouseEvent *e)
 {
 
@@ -231,16 +231,22 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
             universe [currentLocation]= !universe[currentLocation];
             update();
         }
-    } else {
-        universe[kk*universeSize+jj]=false;
-        generation[kk*universeSize+jj]=0;
+    }
+    else {
+        if(!a){universe[kk*universeSize+jj]=false;
+            generation[kk*universeSize+jj]=0;}
+        else
+            generation[kk*universeSize+jj]=gg;
+
         //emit environmentChanged(true);
         double cellWidth = (double)width()/universeSize;
         double cellHeight = (double)height()/universeSize;
         int k = floor(e->y()/cellHeight)+1;
         int j = floor(e->x()/cellWidth)+1;
-kk=k;jj=j;
-universe[kk*universeSize+jj]=true;
+        kk=k;jj=j;
+        a=universe[kk*universeSize+jj];
+        g=generation[kk*universeSize+jj];
+        universe[kk*universeSize+jj]=true;
         generation[k*universeSize+j]=-1;
         update();
 }
@@ -254,7 +260,7 @@ void GameWidget::mouseReleaseEvent(QMouseEvent *e)
 void GameWidget::paintGrid(QPainter &p)
 {
     QRect borders(0, 0, width()-1, height()-1); // borders of the universe
-    QColor gridColor = "#800040"; // color of the grid
+    QColor gridColor = "black"; // color of the grid
     gridColor.setAlpha(10); // must be lighter than main color
     p.setPen(gridColor);
     double cellWidth = (double)width()/universeSize; // width of the widget / number of cells at one row
@@ -272,17 +278,16 @@ void GameWidget::paintUniverse(QPainter &p)
     double cellHeight = (double)height()/universeSize;
     for(int k=1; k <= universeSize; k++) {
         for(int j=1; j <= universeSize; j++) {
-            if(universe[k*universeSize + j] == true) { // if there is any sense to paint it
-                qreal left = (qreal)(cellWidth*j-cellWidth); // margin from left
-                qreal top  = (qreal)(cellHeight*k-cellHeight); // margin from top
-                QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
-                if(generation[k*universeSize + j]==-1) p.fillRect(r, QBrush("yellow"));
+            qreal left = (qreal)(cellWidth*j-cellWidth);
+            qreal top  = (qreal)(cellHeight*k-cellHeight);
+            QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
+            if(universe[k*universeSize + j] == true) {
+                if(generation[k*universeSize + j]==-1) p.fillRect(r, QBrush("#f2d9e6"));
                 else if(generation[k*universeSize + j]<2)
-                p.fillRect(r, QBrush(m_masterColor)); // fill cell with brush of main color
-                else {
-                p.fillRect(r, QBrush(m_masterColor.lighter(110*(generation[k*universeSize + j])/2))); // fill cell with brush of main color
-                }
-            }
+                p.fillRect(r, QBrush(m_masterColor));
+                else
+                p.fillRect(r, QBrush(m_masterColor.lighter(110*(generation[k*universeSize + j])/2)));
+            }  else p.fillRect(r, QBrush("#e3e3e3"));
         }
     }
 }

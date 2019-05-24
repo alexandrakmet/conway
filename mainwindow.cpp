@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->randButton, SIGNAL(clicked()), game,SLOT(random()));
     connect(ui->iterInterval, SIGNAL(valueChanged(int)), game, SLOT(setInterval(int)));
     connect(ui->cellsControl, SIGNAL(valueChanged(int)), game, SLOT(setCellNumber(int)));
+    connect(ui->stepButton,SIGNAL(clicked()), game,SLOT(newGeneration()));
     connect(game,SIGNAL(environmentChanged(bool)),ui->cellsControl,SLOT(setDisabled(bool)));
     connect(game,SIGNAL(gameEnds(bool)),ui->cellsControl,SLOT(setEnabled(bool)));
     connect(ui->colorButton, SIGNAL(clicked()), this, SLOT(selectMasterColor()));

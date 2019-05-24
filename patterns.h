@@ -14,9 +14,10 @@ class Patterns : public QDialog
 public:
     explicit Patterns(QWidget *parent = nullptr);
     ~Patterns();
-
+Ui::Patterns *ui;
 private:
-    Ui::Patterns *ui;
+    void paintUniverse(QPainter &p);
+
 };
 
 #endif // PATTERNS_H
