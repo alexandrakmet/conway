@@ -14,12 +14,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gamewidget.cpp
+    gamewidget.cpp \
+    patterns.cpp
 
 HEADERS  += mainwindow.h \
-    gamewidget.h
+    gamewidget.h \
+    patterns.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    patterns.ui
 
 OTHER_FILES += \
     README.markdown

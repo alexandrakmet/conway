@@ -18,6 +18,21 @@ MainWindow::MainWindow(QWidget *parent) :
     icon.fill(currentColor);
     ui->colorButton->setIcon( QIcon(icon) );
 
+    const int RULE_SET_LENGTH = 12;
+    ruleSetName = new QString[RULE_SET_LENGTH + 1]{"Life", "Replicator",
+            "Seeds", "B25/S4", "Inkspot", "34Life",
+            "Diamoeba", "2x2", "HighLife", "Day&Night",
+            "Morley", "Anneal", "Custom"};
+    ruleSetBor = new QString[RULE_SET_LENGTH]{"3", "1;3;5;7", "2", "2;5",
+            "3", "3;4", "3;5;6;7;8", "3;6",
+            "3;6", "3;6;7;8", "3;6;8", "4;6;7;8"};
+    ruleSetSur = new QString[RULE_SET_LENGTH]{"2;3", "1;3;5;7", "", "4",
+            "0;1;2;3;4;5;6;7;8", "3;4", "5;6;7;8", "1;2;5",
+            "2;3", "3;4;6;7;8", "2;4;5", "3;5;6;7;8"};
+    for (int i = 0; i < RULE_SET_LENGTH + 1; i++) {
+        ui->comboRules->addItem(ruleSetName[i]);
+    }
+
     connect(ui->startButton, SIGNAL(clicked()), game,SLOT(startGame()));
     connect(ui->stopButton, SIGNAL(clicked()), game,SLOT(stopGame()));
     connect(ui->clearButton, SIGNAL(clicked()), game,SLOT(clear()));

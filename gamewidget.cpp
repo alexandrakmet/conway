@@ -15,6 +15,7 @@ GameWidget::GameWidget(QWidget *parent) :
     generations(-1),
     universeSize(50)
 {
+    setMouseTracking(true);
     timer->setInterval(300);
     m_masterColor = "#000066";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
@@ -203,6 +204,8 @@ void GameWidget::paintEvent(QPaintEvent *)
     paintUniverse(p);
 }
 
+bool mp=false;
+
 void GameWidget::mousePressEvent(QMouseEvent *e)
 {
     emit environmentChanged(true);
@@ -211,20 +214,41 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     int k = floor(e->y()/cellHeight)+1;
     int j = floor(e->x()/cellWidth)+1;
     universe[k*universeSize + j] = !universe[k*universeSize + j];
+    mp=true;
     update();
 }
-
+int kk = 0,jj = 0;
 void GameWidget::mouseMoveEvent(QMouseEvent *e)
 {
-    double cellWidth = (double)width()/universeSize;
-    double cellHeight = (double)height()/universeSize;
-    int k = floor(e->y()/cellHeight)+1;
-    int j = floor(e->x()/cellWidth)+1;
-    int currentLocation = k*universeSize + j;
-    if(!universe[currentLocation]){                //if current cell is empty,fill in it
-        universe [currentLocation]= !universe[currentLocation];
+
+    if(mp){
+        double cellWidth = (double)width()/universeSize;
+        double cellHeight = (double)height()/universeSize;
+        int k = floor(e->y()/cellHeight)+1;
+        int j = floor(e->x()/cellWidth)+1;
+        int currentLocation = k*universeSize + j;
+        if(!universe[currentLocation]){                //if current cell is empty,fill in it
+            universe [currentLocation]= !universe[currentLocation];
+            update();
+        }
+    } else {
+        universe[kk*universeSize+jj]=false;
+        generation[kk*universeSize+jj]=0;
+        //emit environmentChanged(true);
+        double cellWidth = (double)width()/universeSize;
+        double cellHeight = (double)height()/universeSize;
+        int k = floor(e->y()/cellHeight)+1;
+        int j = floor(e->x()/cellWidth)+1;
+kk=k;jj=j;
+universe[kk*universeSize+jj]=true;
+        generation[k*universeSize+j]=-1;
         update();
-    }
+}
+}
+
+void GameWidget::mouseReleaseEvent(QMouseEvent *e)
+{
+    mp=false;
 }
 
 void GameWidget::paintGrid(QPainter &p)
@@ -252,7 +276,8 @@ void GameWidget::paintUniverse(QPainter &p)
                 qreal left = (qreal)(cellWidth*j-cellWidth); // margin from left
                 qreal top  = (qreal)(cellHeight*k-cellHeight); // margin from top
                 QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
-                if(generation[k*universeSize + j]<2)
+                if(generation[k*universeSize + j]==-1) p.fillRect(r, QBrush("yellow"));
+                else if(generation[k*universeSize + j]<2)
                 p.fillRect(r, QBrush(m_masterColor)); // fill cell with brush of main color
                 else {
                 p.fillRect(r, QBrush(m_masterColor.lighter(110*(generation[k*universeSize + j])/2))); // fill cell with brush of main color

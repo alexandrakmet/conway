@@ -28,6 +28,9 @@ private:
     Ui::MainWindow *ui;
     QColor currentColor;
     GameWidget* game;
+    QString* ruleSetName;
+    QString* ruleSetSur;
+    QString* ruleSetBor;
 };
 
 #endif // MAINWINDOW_H

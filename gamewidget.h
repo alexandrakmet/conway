@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QWidget>
 #include <QRandomGenerator>
+#include <QMouseEvent>
 
 
 class GameWidget : public QWidget
@@ -17,7 +18,7 @@ protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
-
+    void mouseReleaseEvent(QMouseEvent *e);
 signals:
     //when one of the cell has been changed,emit this signal to lock the universeSize
     void environmentChanged(bool ok);
