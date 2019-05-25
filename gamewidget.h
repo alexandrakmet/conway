@@ -14,11 +14,30 @@ public:
     explicit GameWidget(QWidget *parent = 0);
     ~GameWidget();
 
+    int getUniverseSize() const;
+
+    int getGenerations() const;
+
+    QColor getMasterColor() const;
+
+    bool *getSurvive() const;
+    bool *getBorn() const;
+
+    bool *getUniverse() const;
+
+    int *getGeneration() const;
+
+    bool getPatternSelected() const;
+
+    bool timerState();
+
 protected:
+
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+
 signals:
     //when one of the cell has been changed,emit this signal to lock the universeSize
     void environmentChanged(bool ok);
@@ -30,6 +49,8 @@ public slots:
     void stopGame(); // finish
     void clear(); // clear
     void random();
+    void patternSelected(bool*,int);
+
 
     int cellNumber(); // number of the cells in one row
     void setCellNumber(const int &s); // set number of the cells in one row
@@ -48,10 +69,9 @@ private slots:
     void paintGrid(QPainter &p);
     void paintUniverse(QPainter &p);
     void newGeneration();
-    void patternSelected(bool*,int);
 
 private:
-    bool PATTERN_SELECTED;
+    bool PatternSelected;
     bool* pattern;
     int patternSize;
     QRandomGenerator g;

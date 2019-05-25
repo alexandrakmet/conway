@@ -17,6 +17,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    Patterns pattern;
+
+    QColor getCurrentColor() const;
+
+    GameWidget *getGame() const;
+
+    Ui::MainWindow *getUi() const;
+
+    void saveFile(QString filename);
+
+
 
 signals:
     void selected(bool*,int);
@@ -33,7 +44,6 @@ private:
     Ui::MainWindow *ui;
     QColor currentColor;
     GameWidget* game;
-    Patterns pattern;
     QString* ruleSetName;
     QString* ruleSetSur;
     QString* ruleSetBor;

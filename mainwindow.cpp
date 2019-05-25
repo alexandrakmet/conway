@@ -75,7 +75,6 @@ void MainWindow::onComboboxChanged() {
         sur[surList.at(i).toInt()] = true;
     }
     QStringList borList = ruleSetBor[ui->comboRules->currentIndex()].split(';');
-    qDebug()<<ruleSetBor[ui->comboRules->currentIndex()];
     for (int i = 0; i < borList.size(); i++) {
         bor[borList.at(i).toInt()] = true;
     }
@@ -91,6 +90,10 @@ void MainWindow::saveGame()
                                                     tr("Conway's Game *.life Files (*.life)"));
     if(filename.length() < 1)
         return;
+   saveFile(filename);
+}
+
+void MainWindow::saveFile(QString filename){
     QFile file(filename);
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         return;
@@ -144,6 +147,23 @@ void MainWindow::loadGame()
     in >> r; // r will be interval number
     ui->iterInterval->setValue(r);
     game->setInterval(r);
+}
+
+
+Ui::MainWindow *MainWindow::getUi() const
+{
+    return ui;
+}
+
+
+GameWidget *MainWindow::getGame() const
+{
+    return game;
+}
+
+QColor MainWindow::getCurrentColor() const
+{
+    return currentColor;
 }
 
 void MainWindow::selectMasterColor()

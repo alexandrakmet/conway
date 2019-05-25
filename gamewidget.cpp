@@ -14,11 +14,11 @@ GameWidget::GameWidget(QWidget *parent) :
     timer(new QTimer(this)),
     generations(-1),
     universeSize(50),
-    PATTERN_SELECTED(false)
+    PatternSelected(false)
 {
     setMouseTracking(true);
     timer->setInterval(300);
-    m_masterColor = "#134614";
+    m_masterColor = "#005500";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
     generation = new int[(universeSize + 2) * (universeSize + 2)];
@@ -212,13 +212,51 @@ void GameWidget::newGeneration()
     }
 }
 
+
 void GameWidget::patternSelected(bool *p, int s)
 {
-   PATTERN_SELECTED = (p != nullptr && s <= universeSize);
-   if(PATTERN_SELECTED){
+    PatternSelected = (p != nullptr && s <= universeSize);
+   if(PatternSelected){
        pattern = p;
        patternSize = s;
    }
+}
+
+bool GameWidget::getPatternSelected() const
+{
+    return PatternSelected;
+}
+
+bool GameWidget::timerState()
+{
+    return timer->isActive();
+}
+
+int *GameWidget::getGeneration() const
+{
+    return generation;
+}
+
+bool *GameWidget::getUniverse() const
+{
+    return universe;
+}
+
+
+
+QColor GameWidget::getMasterColor() const
+{
+    return m_masterColor;
+}
+
+int GameWidget::getGenerations() const
+{
+    return generations;
+}
+
+int GameWidget::getUniverseSize() const
+{
+    return universeSize;
 }
 
 void GameWidget::paintEvent(QPaintEvent *)
@@ -238,11 +276,11 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     double cellHeight = (double)height()/universeSize;
     int k = floor(e->y()/cellHeight) + 1;
     int j = floor(e->x()/cellWidth) + 1;
-    if(PATTERN_SELECTED){
+    if(PatternSelected){
         for(int x = 0; x < patternSize; x++){
             for(int y = 0; y < patternSize; y++){
                 if((k + y) < universeSize+2) {
-                    PATTERN_SELECTED = false;
+                    PatternSelected = false;
                     universe[(k + y)*universeSize + j + x] = pattern[y*patternSize + x];
                     generation[(k + y)*universeSize + j + x] = 0;
                     wasMoved = false;
@@ -271,7 +309,7 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
             update();
         }
     }
-    else if(PATTERN_SELECTED) {
+    else if(PatternSelected) {
         if(wasMoved){
             for(int x = 0; x < patternSize; x++){
                 for(int y = 0; y < patternSize; y++){
@@ -351,4 +389,14 @@ void GameWidget::setMasterColor(const QColor &color)
 {
     m_masterColor = color;
     update();
+}
+
+bool* GameWidget::getSurvive() const
+{
+    return rule.survive;
+}
+
+bool *GameWidget::getBorn() const
+{
+    return rule.born;
 }
