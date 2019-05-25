@@ -17,7 +17,7 @@ GameWidget::GameWidget(QWidget *parent) :
 {
     setMouseTracking(true);
     timer->setInterval(300);
-    m_masterColor = "#72274e";
+    m_masterColor = "#134614";
     universe = new bool[(universeSize + 2) * (universeSize + 2)];
     next = new bool[(universeSize + 2) * (universeSize + 2)];
     generation = new int[(universeSize + 2) * (universeSize + 2)];
@@ -110,7 +110,7 @@ QString GameWidget::dump()
                 temp = 'o';
             }
             master.append(temp);
-            generation[k*universeSize + j]<10? master.append(QString::number(generation[k*universeSize + j])):master.append(QString::number(9));
+            (generation[k*universeSize + j] != -1 && generation[k*universeSize + j]<10)? master.append(QString::number(generation[k*universeSize + j])):master.append(QString::number(9));
         }
         master.append("\n");
     }
@@ -219,28 +219,29 @@ void GameWidget::paintEvent(QPaintEvent *)
 
 }
 
-bool mp=false;
+bool mousePressed=false;
 
 void GameWidget::mousePressEvent(QMouseEvent *e)
 {
     emit environmentChanged(true);
     double cellWidth = (double)width()/universeSize;
     double cellHeight = (double)height()/universeSize;
-    int k = floor(e->y()/cellHeight)+1;
-    int j = floor(e->x()/cellWidth)+1;
+    int k = floor(e->y()/cellHeight) + 1;
+    int j = floor(e->x()/cellWidth) + 1;
     universe[k*universeSize + j] = !universe[k*universeSize + j];
-    mp=true;
+    mousePressed = true;
     update();
 }
+
 int kk = 0,jj = 0, gg; bool a;
 void GameWidget::mouseMoveEvent(QMouseEvent *e)
 {
 
-    if(mp){
+    if(mousePressed){
         double cellWidth = (double)width()/universeSize;
         double cellHeight = (double)height()/universeSize;
-        int k = floor(e->y()/cellHeight)+1;
-        int j = floor(e->x()/cellWidth)+1;
+        int k = floor(e->y()/cellHeight) + 1;
+        int j = floor(e->x()/cellWidth) + 1;
         int currentLocation = k*universeSize + j;
         if(!universe[currentLocation]){                //if current cell is empty,fill in it
             universe [currentLocation]= !universe[currentLocation];
@@ -248,28 +249,30 @@ void GameWidget::mouseMoveEvent(QMouseEvent *e)
         }
     }
     else {
-        if(!a){universe[kk*universeSize+jj]=false;
-            generation[kk*universeSize+jj]=0;}
-        else
+       /* if(!a){
+            universe[kk*universeSize+jj]=false;
+            generation[kk*universeSize+jj]=0;
+        } else
             generation[kk*universeSize+jj]=gg;
         //emit environmentChanged(true);
         double cellWidth = (double)width()/universeSize;
         double cellHeight = (double)height()/universeSize;
-        int k = floor(e->y()/cellHeight)+1;
-        int j = floor(e->x()/cellWidth)+1;
-        if(j!=universeSize && k!=0){
-        kk=k;jj=j;
-        a=universe[kk*universeSize+jj];
-        g=generation[kk*universeSize+jj];
-        universe[kk*universeSize+jj]=true;
-        generation[k*universeSize+j]=-1;
-        update();} else update();
+        int k = floor(e->y()/cellHeight) + 1;
+        int j = floor(e->x()/cellWidth) + 1;
+        if(j != universeSize && k != 0){
+            kk=k;jj=j;
+            a=universe[kk*universeSize+jj];
+            g=generation[kk*universeSize+jj];
+            universe[kk*universeSize+jj]=true;
+            generation[k*universeSize+j]=-1;
+            update();
+        } else update();*/
     }
 }
 
 void GameWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-    mp=false;
+    mousePressed=false;
 }
 
 void GameWidget::paintGrid(QPainter &p)
@@ -297,8 +300,8 @@ void GameWidget::paintUniverse(QPainter &p)
             qreal top  = (qreal)(cellHeight*k-cellHeight);
             QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
             if(universe[k*universeSize + j] == true) {
-                if(generation[k*universeSize + j]==-1) p.fillRect(r, QBrush("#f2d9e6"));
-                else if(generation[k*universeSize + j]<2)
+                if(generation[k*universeSize + j] == -1) p.fillRect(r, QBrush("#f2d9e6"));
+                else if(generation[k*universeSize + j] < 2)
                 p.fillRect(r, QBrush(m_masterColor));
                 else
                 p.fillRect(r, QBrush(m_masterColor.lighter(110*(generation[k*universeSize + j])/2)));

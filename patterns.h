@@ -2,6 +2,7 @@
 #define PATTERNS_H
 
 #include <QDialog>
+#include <QMouseEvent>
 
 namespace Ui {
 class Patterns;
@@ -14,10 +15,13 @@ class Patterns : public QDialog
 public:
     explicit Patterns(QWidget *parent = nullptr);
     ~Patterns();
-Ui::Patterns *ui;
-private:
-    void paintUniverse(QPainter &p);
+    void mousePressEvent(QMouseEvent *e);
 
+public slots:
+    void choice();
+
+private:
+    Ui::Patterns *ui;
 };
 
 #endif // PATTERNS_H

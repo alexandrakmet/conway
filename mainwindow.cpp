@@ -43,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(game,SIGNAL(environmentChanged(bool)),ui->cellsControl,SLOT(setDisabled(bool)));
     connect(game,SIGNAL(gameEnds(bool)),ui->cellsControl,SLOT(setEnabled(bool)));
     connect(ui->colorButton, SIGNAL(clicked()), this, SLOT(selectMasterColor()));
+    connect(ui->patternButton, SIGNAL(clicked()), this, SLOT(selectPattern()));
+    //connect(pattern, SIGNAL(choice(int*)), game, SLOT(setP(int*)));
 
     connect(ui->comboRules, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboboxChanged()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveGame()));
@@ -146,6 +148,8 @@ void MainWindow::loadGame()
 
 void MainWindow::selectMasterColor()
 {
+
+
     QColor color = QColorDialog::getColor(currentColor, this, tr("Select color of figures"));
     if(!color.isValid())
         return;
@@ -156,4 +160,9 @@ void MainWindow::selectMasterColor()
     ui->colorButton->setIcon( QIcon(icon) );
 }
 
+void MainWindow::selectPattern(){
+    game->stopGame();
+    pattern.setModal(true);
+    pattern.exec();
+}
 

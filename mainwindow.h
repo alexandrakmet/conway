@@ -19,6 +19,7 @@ public:
     ~MainWindow();
 
 public slots:
+    void selectPattern();
     void selectMasterColor();
     void onComboboxChanged();
     void saveGame();
@@ -29,6 +30,7 @@ private:
     Ui::MainWindow *ui;
     QColor currentColor;
     GameWidget* game;
+    Patterns pattern;
     QString* ruleSetName;
     QString* ruleSetSur;
     QString* ruleSetBor;

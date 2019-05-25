@@ -1,34 +1,30 @@
 QWidget {
- background-color: #1d1d1d;
- color:white;
+ background-color: #eff4ee;
+ color:black;
+ font-family: "Segoe UI";
  }
 
 QPushButton {
     border-style: outset;
-    border-color: #72274e;
+    border-color: #004d00;
     border-width: 2px;
-    background-color: #f2d9e6;
+    background-color: #f2f2f2;
     font-family: "Segoe UI", Helvetica, Arial, sans-serif;
     font-size: 9pt;
-    color: #72274e;
+    color: #004d00;
     font-weight: bold;
     padding: 5px 20px 5px 20px;
 }
 
 QPushButton:hover {
-    background-color: #3a3a3a;
+    background-color: #d9d9d9;
 }
 
 QPushButton:pressed, QPushButton:default:hover:pressed {
-    background-color: yellow;
-    color: #1d1d1d;
+    background-color: #004d00;
+    color: #eff4ee;
 }
 
-QPushButton:focused {
-    border-color: yellow, yellow;
-    border-width: 1, 1;
-    border-style: solid;
-}
 
 QComboBox {
     border: 1px solid gray;
@@ -38,7 +34,7 @@ QComboBox {
 }
 
 QComboBox:editable {
-    background: black;
+    background: #f2f2f2
 }
 
 QComboBox:!editable, QComboBox::drop-down:editable {
@@ -57,5 +53,11 @@ QComboBox:!editable:on, QComboBox::drop-down:editable:on {
 QComboBox:on {
     padding-top: 3px;
     padding-left: 4px;
+}
+
+QLabel {
+    font-size: 11pt;
+
+    opacity: 0.6;
 }
 
