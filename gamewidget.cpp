@@ -13,7 +13,8 @@ GameWidget::GameWidget(QWidget *parent) :
     QWidget(parent),
     timer(new QTimer(this)),
     generations(-1),
-    universeSize(50)
+    universeSize(50),
+    PATTERN_SELECTED(false)
 {
     setMouseTracking(true);
     timer->setInterval(300);
@@ -211,6 +212,15 @@ void GameWidget::newGeneration()
     }
 }
 
+void GameWidget::patternSelected(bool *p, int s)
+{
+   PATTERN_SELECTED = (p != nullptr && s <= universeSize);
+   if(PATTERN_SELECTED){
+       pattern = p;
+       patternSize = s;
+   }
+}
+
 void GameWidget::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
@@ -220,7 +230,7 @@ void GameWidget::paintEvent(QPaintEvent *)
 }
 
 bool mousePressed=false;
-
+bool wasMoved = false;
 void GameWidget::mousePressEvent(QMouseEvent *e)
 {
     emit environmentChanged(true);
@@ -228,47 +238,69 @@ void GameWidget::mousePressEvent(QMouseEvent *e)
     double cellHeight = (double)height()/universeSize;
     int k = floor(e->y()/cellHeight) + 1;
     int j = floor(e->x()/cellWidth) + 1;
-    universe[k*universeSize + j] = !universe[k*universeSize + j];
-    mousePressed = true;
+    if(PATTERN_SELECTED){
+        for(int x = 0; x < patternSize; x++){
+            for(int y = 0; y < patternSize; y++){
+                if((k + y) < universeSize+2) {
+                    PATTERN_SELECTED = false;
+                    universe[(k + y)*universeSize + j + x] = pattern[y*patternSize + x];
+                    generation[(k + y)*universeSize + j + x] = 0;
+                    wasMoved = false;
+                }
+            }
+        }
+    } else {
+        universe[k*universeSize + j] = !universe[k*universeSize + j];
+        mousePressed = true;
+    }
     update();
 }
 
-int kk = 0,jj = 0, gg; bool a;
+int prevK, prevJ; int* prevGener; bool* prevUniv;
 void GameWidget::mouseMoveEvent(QMouseEvent *e)
 {
 
+    double cellWidth = (double)width()/universeSize;
+    double cellHeight = (double)height()/universeSize;
+    int k = floor(e->y()/cellHeight) + 1;
+    int j = floor(e->x()/cellWidth) + 1;
+    int currentLocation = k*universeSize + j;
     if(mousePressed){
-        double cellWidth = (double)width()/universeSize;
-        double cellHeight = (double)height()/universeSize;
-        int k = floor(e->y()/cellHeight) + 1;
-        int j = floor(e->x()/cellWidth) + 1;
-        int currentLocation = k*universeSize + j;
         if(!universe[currentLocation]){                //if current cell is empty,fill in it
             universe [currentLocation]= !universe[currentLocation];
             update();
         }
     }
-    else {
-       /* if(!a){
-            universe[kk*universeSize+jj]=false;
-            generation[kk*universeSize+jj]=0;
-        } else
-            generation[kk*universeSize+jj]=gg;
-        //emit environmentChanged(true);
-        double cellWidth = (double)width()/universeSize;
-        double cellHeight = (double)height()/universeSize;
-        int k = floor(e->y()/cellHeight) + 1;
-        int j = floor(e->x()/cellWidth) + 1;
-        if(j != universeSize && k != 0){
-            kk=k;jj=j;
-            a=universe[kk*universeSize+jj];
-            g=generation[kk*universeSize+jj];
-            universe[kk*universeSize+jj]=true;
-            generation[k*universeSize+j]=-1;
-            update();
-        } else update();*/
+    else if(PATTERN_SELECTED) {
+        if(wasMoved){
+            for(int x = 0; x < patternSize; x++){
+                for(int y = 0; y < patternSize; y++){
+                    if((prevK + y) < universeSize+2) {
+                        universe[(prevK + y)*universeSize + prevJ + x] = prevUniv[y*patternSize + x];
+                        generation[(prevK + y)*universeSize + prevJ + x] = prevGener[y*patternSize + x];
+                }
+            }
+        }
+        }
+        wasMoved = true;
+        prevGener = new int[patternSize*patternSize];
+        prevUniv = new bool[patternSize*patternSize];
+        prevK = k; prevJ = j;
+        for(int x = 0; x < patternSize; x++){
+            for(int y = 0; y < patternSize; y++){
+                if((k + y) < universeSize+2) {
+                    prevUniv[y*patternSize + x] = universe[(k + y)*universeSize + j + x];
+                    prevGener[y*patternSize + x] = generation[(k + y)*universeSize + j + x];
+                    universe[(k + y)*universeSize + j + x] = pattern[y*patternSize + x];
+                    generation[(k + y)*universeSize + j + x] = -1;
+                }
+            }
+         }
+        update();
+
     }
 }
+
 
 void GameWidget::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -300,7 +332,7 @@ void GameWidget::paintUniverse(QPainter &p)
             qreal top  = (qreal)(cellHeight*k-cellHeight);
             QRectF r(left, top, (qreal)cellWidth, (qreal)cellHeight);
             if(universe[k*universeSize + j] == true) {
-                if(generation[k*universeSize + j] == -1) p.fillRect(r, QBrush("#f2d9e6"));
+                if(generation[k*universeSize + j] == -1) p.fillRect(r, QBrush("#5fd361"));
                 else if(generation[k*universeSize + j] < 2)
                 p.fillRect(r, QBrush(m_masterColor));
                 else

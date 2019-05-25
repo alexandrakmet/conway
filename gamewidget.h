@@ -48,8 +48,12 @@ private slots:
     void paintGrid(QPainter &p);
     void paintUniverse(QPainter &p);
     void newGeneration();
+    void patternSelected(bool*,int);
 
 private:
+    bool PATTERN_SELECTED;
+    bool* pattern;
+    int patternSize;
     QRandomGenerator g;
     QColor m_masterColor;
     QTimer* timer;

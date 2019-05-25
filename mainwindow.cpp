@@ -19,17 +19,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->colorButton->setIcon( QIcon(icon) );
 
     const int RULE_SET_LENGTH = 12;
-    ruleSetName = new QString[RULE_SET_LENGTH + 1]{"Life", "Replicator",
+    ruleSetName = new QString[RULE_SET_LENGTH]{"Life", "Replicator",
             "Seeds", "B25/S4", "Inkspot", "34Life",
             "Diamoeba", "2x2", "HighLife", "Day&Night",
-            "Morley", "Anneal", "Custom"};
+            "Morley", "Anneal"};
     ruleSetBor = new QString[RULE_SET_LENGTH]{"3", "1;3;5;7", "2", "2;5",
             "3", "3;4", "3;5;6;7;8", "3;6",
             "3;6", "3;6;7;8", "3;6;8", "4;6;7;8"};
     ruleSetSur = new QString[RULE_SET_LENGTH]{"2;3", "1;3;5;7", "", "4",
             "0;1;2;3;4;5;6;7;8", "3;4", "5;6;7;8", "1;2;5",
             "2;3", "3;4;6;7;8", "2;4;5", "3;5;6;7;8"};
-    for (int i = 0; i < RULE_SET_LENGTH + 1; i++) {
+    for (int i = 0; i < RULE_SET_LENGTH; i++) {
         ui->comboRules->addItem(ruleSetName[i]);
     }
 
@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(game,SIGNAL(gameEnds(bool)),ui->cellsControl,SLOT(setEnabled(bool)));
     connect(ui->colorButton, SIGNAL(clicked()), this, SLOT(selectMasterColor()));
     connect(ui->patternButton, SIGNAL(clicked()), this, SLOT(selectPattern()));
-    //connect(pattern, SIGNAL(choice(int*)), game, SLOT(setP(int*)));
+    connect(this,SIGNAL(selected(bool*,int)), game, SLOT(patternSelected(bool*,int)));
 
     connect(ui->comboRules, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboboxChanged()));
     connect(ui->saveButton, SIGNAL(clicked()), this, SLOT(saveGame()));
@@ -164,5 +164,6 @@ void MainWindow::selectPattern(){
     game->stopGame();
     pattern.setModal(true);
     pattern.exec();
+    emit selected(pattern.current, pattern.size);
 }
 

@@ -18,6 +18,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void selected(bool*,int);
+
 public slots:
     void selectPattern();
     void selectMasterColor();
