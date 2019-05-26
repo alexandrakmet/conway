@@ -14,8 +14,10 @@ class Patterns : public QDialog
 public:
     explicit Patterns(QWidget *parent = nullptr);
     ~Patterns();
+
     bool* current;
     int size;
+
     void setCurrentPattern(QString);
 
 public slots:
